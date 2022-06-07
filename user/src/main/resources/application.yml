@@ -1,0 +1,107 @@
+server:
+  port: ${config.port}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8086/eureka
+spring:
+#  main:
+#    allow-bean-definition-overriding: true
+#  zipkin:
+#    enabled: true
+#    base-url: ${config.zipkin.url}
+#  sleuth:
+#    sampler:
+#      percentage: ${config.sleuth.sampler.percentage}
+#  servlet:
+#    multipart:
+#      maxFileSize: ${config.servlet.multipart.maxFileSize}
+#      maxRequestSize: ${config.servlet.multipart.maxFileSize}
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: ${config.datasource.druid.master.url}
+      username: ${config.datasource.druid.master.username}
+      password: ${config.datasource.druid.master.password}
+      #获取连接等待超时时间
+      max-wait: 60000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 2000
+#  jackson: #把bean转成json时的配置============================================
+#    default-property-inclusion: always #配置jackson转换时的属性
+#    date-format: yyyy-MM-dd HH:mm:ss  #JSON处理日期类型的格式
+#    time-zone: GMT+8
+#
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: DEFAULT_GROUP
+#  #缓存配置===========================================================
+#  redis:
+#    database: 0
+#    cluster:
+#      nodes: ${config.redis.cluster.nodes}
+#    timeout: ${config.redis.timeout}
+#    password:
+#    lettuce:
+#      pool:
+#        max-active: ${config.redis.lettuce.pool.max-active}
+#        max-wait: ${config.redis.lettuce.pool.max-wait}
+#        max-idle: ${config.redis.lettuce.pool.max-idle}
+#        min-idle: ${config.redis.lettuce.pool.min-idle}
+#
+#mybatis-plus: #mybatis-plus数据库操作配置=====================================
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath:mapper/*.xml
+#  global-config:
+#    db-config:
+#      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+#      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+#    worker-id: ${config.mybatis-plus.global-config.worker-id}
+#
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://admin:123123@192.168.3.80:10001/eureka
+##      defaultZone: ${config.eureka.client.serviceUrl.defaultZone}
+#  instance:
+#    hostname: ${config.eureka.instance.hostname}
+#
+#feign:
+#  hystrix:
+#    enabled: true
+#
+## 超时时间
+#hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 61000
+#ribbon:
+#  ConnectTimeout: 60000
+#  ReadTimeout: 60000
+#
+#aliyun:
+#  sms:
+#    accesskey-id: ${config.aliyun.sms.accesskey-id}
+#    access-key-secret: ${config.aliyun.sms.access-key-secret}
+#    template-code: ${config.aliyun.sms.template-code}
+#    sign-name: ${config.aliyun.sms.sign-name}
+#    bucket: ${config.aliyun.sms.bucket}
+#    endpoint: ${config.aliyun.sms.endpoint}
+#  oss:
+#    accessKeyId: ${config.aliyun.oss.accessKeyId}
+#    accessKeySecret: ${config.aliyun.oss.accessKeySecret}
+#    endpoint: ${config.aliyun.oss.endpoint}
+#    bucketName: ${config.aliyun.oss.bucketName}
+
+
+#mybatis-plus
+mybatis-plus:
+  configuration:
+    auto-mapping-behavior: full
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    configuration.log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapper-locations: mapper.*Mapper.xml
+
+
+
+

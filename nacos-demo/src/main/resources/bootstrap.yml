@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: nacos
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848
+        file-extension: yml
+        namespace: b68bb8d8-5b0e-4871-9451-82ff6228ea42
+        group: DEFAULT_GROUP
+
+#log config---------------------------------------------------------------------
+log:
+  path: ${config.log.path}
+  package:
+    my: com.bxwell.hj360

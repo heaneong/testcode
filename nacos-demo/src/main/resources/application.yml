@@ -1,0 +1,30 @@
+server:
+  port: ${config.port}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8086/eureka
+spring:
+  datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: ${config.datasource.druid.master.url}
+      username: ${config.datasource.druid.master.username}
+      password: ${config.datasource.druid.master.password}
+      max-wait: 60000
+      time-between-eviction-runs-millis: 2000
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: DEFAULT_GROUP
+mybatis-plus:
+  configuration:
+    auto-mapping-behavior: full
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    configuration.log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapper-locations: mapper.*Mapper.xml
+
+
+
+
