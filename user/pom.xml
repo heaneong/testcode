@@ -29,12 +29,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!--服务调用-->
+        <!--feign-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <!--代替 spring-cloud-config 的nacos-config -->
+        <!-- spring-cloud-config 대신 nacos-config -->
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -85,13 +85,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency> <!--引入mysql相关jar包-->
+        </dependency> <!--mysql 관견 jar-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--引入mybatis-plus jar包-->
+        <!--mybatis-plus jar-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -102,6 +102,20 @@
             <artifactId>mybatis-plus-generator</artifactId>
             <version>3.2.0</version>
         </dependency>
+
+        <!--swagger2 jar-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <!--swagger ui-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

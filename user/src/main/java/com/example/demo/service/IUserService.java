@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.User;
+import com.example.demo.vo.user.UserRequestVo;
 
 import java.util.List;
 
@@ -15,4 +16,8 @@ public interface IUserService {
 
     //전체 사용자 검색
     List<User> getUserList();
+
+    User getUserById(String id);
+
+    void insertUser(UserRequestVo user);
 }

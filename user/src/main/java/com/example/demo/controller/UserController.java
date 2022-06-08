@@ -4,9 +4,14 @@ import com.example.demo.constant.CommonConst;
 import com.example.demo.model.User;
 import com.example.demo.service.IUserService;
 import com.example.demo.vo.ResultObject;
+import com.example.demo.vo.user.UserRequestVo;
+import io.swagger.annotations.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -19,12 +24,14 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
+@Api(value = "사용자 관리")
 public class UserController {
 
     @Autowired
     private IUserService userService;
 
-    @RequestMapping("/queryList")
+    @ApiOperation("전체 사용자 검색")
+    @RequestMapping(value = "/queryList",method = RequestMethod.GET)
     public ResultObject<List<User>> getUserList(){
         ResultObject<List<User>> resultObject = new ResultObject<>();
         try {
@@ -37,6 +44,43 @@ public class UserController {
             e.printStackTrace();
             resultObject.setCode(CommonConst.FAIL);
             resultObject.setMsg("검색 실패");
+        }
+        return resultObject;
+    }
+
+    @ApiOperation("지정 사용자 검색")
+    @RequestMapping(value = "/queryById",method = RequestMethod.GET)
+    public ResultObject<User> getUserById(String id){
+        ResultObject<User> resultObject = new ResultObject<>();
+        try {
+            User user = userService.getUserById(id);
+            //비밀버호 안전보호
+            user.passwordEncryption();
+            resultObject.setCode(CommonConst.SUCCESS);
+            resultObject.setResult(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultObject.setCode(CommonConst.FAIL);
+            resultObject.setMsg("검색 실패");
+        }
+        return resultObject;
+    }
+
+    @ApiOperation("새로운 사용자 저장")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userName", value = "사용자 이름", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "비밀번호", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "createId", value = "생성 자 id", required = true, dataType = "String")})
+    @RequestMapping(value = "/insert",method = RequestMethod.PUT)
+    public ResultObject insertUser(UserRequestVo user){
+        ResultObject resultObject = new ResultObject<>();
+        try {
+            userService.insertUser(user);
+            resultObject.setCode(CommonConst.SUCCESS);
+            resultObject.setMsg("저장 성공");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultObject.setCode(CommonConst.FAIL);
+            resultObject.setMsg("저장 실패");
         }
         return resultObject;
     }

@@ -1,5 +1,9 @@
 package com.example.demo.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -9,14 +13,19 @@ import java.io.Serializable;
  * \* Description:
  * \
  */
+@ToString
+@ApiModel(value="ResultObject 대상", description="결과 대상")
 public class ResultObject<T> implements Serializable {
 
     private static final long serialVersionUID = -2403923814218768698L;
 
+    @ApiModelProperty(value = "결과 데이터")
     public T result;
 
+    @ApiModelProperty(value = "상태 코드")
     public Integer code;
 
+    @ApiModelProperty(value = "메세지")
     public String msg;
 
     public T getResult() {
