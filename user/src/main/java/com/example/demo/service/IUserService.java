@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Resource;
 import com.example.demo.model.User;
 import com.example.demo.vo.user.UserRequestVo;
 
@@ -19,5 +20,13 @@ public interface IUserService {
 
     User getUserById(String id);
 
-    void insertUser(UserRequestVo user);
+    void insertUser(UserRequestVo user) throws Exception;
+
+    void updateUser(UserRequestVo user);
+
+    void deleteUser(UserRequestVo user);
+
+    List<Resource> queryUserResources(UserRequestVo user);
+
+    User getUserByUserName(String userName);
 }

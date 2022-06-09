@@ -17,13 +17,30 @@ spring:
     alibaba:
       seata:
         tx-service-group: DEFAULT_GROUP
+  redis: #redis config===========================================================
+    database: ${config.redis.database}
+    timeout: ${config.redis.timeout}
+    host: 127.0.0.1
+    # redis端口（默认为6379）
+    port: 6379
+    # redis访问密码（默认为空）
+    password: root
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
+
 mybatis-plus:
   configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     auto-mapping-behavior: full
     map-underscore-to-camel-case: true
     call-setters-on-nulls: true
     configuration.log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     mapper-locations: mapper.*Mapper.xml
+
 
 
 

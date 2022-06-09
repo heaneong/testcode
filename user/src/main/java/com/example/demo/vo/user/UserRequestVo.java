@@ -30,6 +30,9 @@ public class UserRequestVo implements Serializable {
 
     private static final long serialVersionUID = 1103515721959863427L;
 
+    @ApiModelProperty(value = "사용자 id")
+    private String userId;
+
     @ApiModelProperty(value = "사용자 이름")
     private String userName;
 
@@ -42,5 +45,7 @@ public class UserRequestVo implements Serializable {
     @ApiModelProperty(value = "수개 자 id")
     private String updateId;
 
+    @ApiModelProperty(value = "상태")
+    private Integer status;
 
 }

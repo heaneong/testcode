@@ -84,7 +84,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testInsertUser() {
+    void testInsertUser() throws Exception {
         // Setup
         final UserRequestVo user = new UserRequestVo();
         user.setUserName("userName");
