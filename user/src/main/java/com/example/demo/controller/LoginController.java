@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.example.demo.constant.CommonConst;
 import com.example.demo.model.Resource;
 import com.example.demo.model.User;
+import com.example.demo.service.IResourceService;
 import com.example.demo.service.IUserRoleService;
 import com.example.demo.service.IUserService;
 import com.example.demo.vo.ResultObject;
 import com.example.demo.vo.user.UserRequestVo;
+import com.netflix.client.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -38,11 +43,14 @@ public class LoginController {
     private IUserService userService;
 
     @Autowired
+    private IResourceService resourceService;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
     @ApiOperation("로그인")
     @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public ResultObject<User> login(String userName,String password){
+    public ResultObject<User> login(String userName, String password, HttpSession session, HttpServletResponse res){
         ResultObject<User> resultObject = new ResultObject<>();
         try {
             User user = userService.getUserByUserName(userName);
@@ -53,8 +61,19 @@ public class LoginController {
             UserRequestVo requestVo = new UserRequestVo();
             BeanUtils.copyProperties(user,requestVo);
             List<Resource> resources = userService.queryUserResources(requestVo);
+
+            //권한 필요 자원 없으면 저장
+            String allResource = (String) session.getAttribute(CommonConst.SESSION_RESOURCES_NAME);
+            if (StringUtils.isEmpty(allResource)){
+                List<Resource> resourceList = resourceService.queryAllResources();
+                session.setAttribute(CommonConst.SESSION_RESOURCES_NAME,JSON.toJSONString(resourceList));
+            }
+
             //로그인 상태 및 권한 저장
-            redisTemplate.opsForValue().set("login::user::"+userName, JSON.toJSON(resources),10*1000);
+            session.setAttribute(CommonConst.SESSION_LOGIN_NAME+userName,JSON.toJSONString(resources));
+
+            //username cookie 저장
+            res.addCookie(new Cookie(CommonConst.COOKIE_USER_NAME,userName));
 
             //비밀버호 안전보호
             user.passwordEncryption();
@@ -65,6 +84,29 @@ public class LoginController {
             e.printStackTrace();
             resultObject.setCode(CommonConst.FAIL);
             resultObject.setMsg("로그인 실패");
+        }
+        return resultObject;
+    }
+
+    @ApiOperation("호출")
+    @RequestMapping(value = "/logout",method = RequestMethod.GET)
+    public ResultObject<User> logout(String userName, HttpSession session){
+        ResultObject<User> resultObject = new ResultObject<>();
+        try {
+            User user = userService.getUserByUserName(userName);
+            if (user == null || StringUtils.isEmpty(user.getUserId()) ){
+                resultObject.setCode(CommonConst.FAIL);
+                resultObject.setMsg("실패");
+            }
+            //로그인 상태 삭재
+            session.removeAttribute("login::user::"+userName);
+
+            resultObject.setCode(CommonConst.FAIL);
+            resultObject.setMsg("호출 성공");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultObject.setCode(CommonConst.FAIL);
+            resultObject.setMsg("호출 실패");
         }
         return resultObject;
     }

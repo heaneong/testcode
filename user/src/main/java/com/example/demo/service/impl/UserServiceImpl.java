@@ -6,12 +6,15 @@ import com.example.demo.constant.CommonConst;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.Resource;
 import com.example.demo.model.User;
+import com.example.demo.service.IUserRoleService;
 import com.example.demo.service.IUserService;
 import com.example.demo.util.CommonUtils;
 import com.example.demo.vo.user.UserRequestVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,10 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    @Autowired
+    private IUserRoleService userRoleService;
+
     @Override
     public List<User> getUserList() {
         return baseMapper.selectList(new QueryWrapper<User>().lambda()
@@ -66,11 +73,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteUser(UserRequestVo user) {
+        //사용자 삭제
         User saveUser = new User();
         BeanUtils.copyProperties(user,saveUser);
         saveUser.setDelFlag(CommonConst.DEL_FLAG_DEL);
         baseMapper.updateById(saveUser);
+
+        //역할 관계 삭제
+        userRoleService.deleteUserRoleByUserId(user.getUserId());
+
     }
 
     @Override

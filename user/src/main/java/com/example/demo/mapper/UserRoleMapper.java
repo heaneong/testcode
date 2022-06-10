@@ -7,6 +7,7 @@ import com.example.demo.model.UserRoleRelation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -20,4 +21,14 @@ import java.util.List;
 @Mapper
 public interface UserRoleMapper extends BaseMapper<UserRoleRelation> {
 
+
+    @Update("<script>" +
+            "        UPDATE\n" +
+            "            user_role\n" +
+            "        SET\n" +
+            "            del_flag = 1\n" +
+            "        WHERE \n" +
+            "            user_id = #{userId} \n" +
+            "</script>")
+    void deleteUserRoleByUserId(String userId);
 }

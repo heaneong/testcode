@@ -43,4 +43,9 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRoleRel
         userRoleRelation.setRoleId(roleId);
         baseMapper.insert(userRoleRelation);
     }
+
+    @Override
+    public void deleteUserRoleByUserId(String userId) {
+        baseMapper.deleteUserRoleByUserId(userId);
+    }
 }

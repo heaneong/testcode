@@ -39,4 +39,19 @@ public class CommonConst {
      */
     public static final Integer DEL_FLAG_DEL = 1;
 
+    /**
+     * 로그인 상태 저장 KEY
+     */
+    public static final String SESSION_LOGIN_NAME = "login::user::";
+
+    /**
+     * 권한 필요 자원 저장 KEY
+     */
+    public static final String SESSION_RESOURCES_NAME = "resources";
+
+    /**
+     * cookie username KEY
+     */
+    public static final String COOKIE_USER_NAME = "username";
+
 }
