@@ -3,6 +3,9 @@ package com.example.demo.config;
 import com.alibaba.fastjson.JSON;
 import com.example.demo.constant.CommonConst;
 import com.example.demo.model.Resource;
+import com.example.demo.service.IResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,10 +20,15 @@ import java.util.stream.Collectors;
  * \* User: lihaining
  * \* Date: 2022/6/10
  * \* Time: 14:00
- * \* Description:
+ * \* Description: 권한 필요한 페이지 에 권한 체크
  * \
  */
+@Component
 public class PermissionInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private IResourceService resourceService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
@@ -31,7 +39,9 @@ public class PermissionInterceptor implements HandlerInterceptor {
         //전체 자원에 없는 경우 관리 필요 없음.
         String attribute = (String) session.getAttribute(CommonConst.SESSION_RESOURCES_NAME);
         if (StringUtils.isEmpty(attribute)){
-            return true;
+            List<Resource> resourceList = resourceService.queryAllResources();
+            session.setAttribute(CommonConst.SESSION_RESOURCES_NAME,attribute = JSON.toJSONString(resourceList));
+//            redisTemplate.opsForValue().set(CommonConst.SESSION_RESOURCES_NAME,JSON.toJSONString(resourceList));
         }
         List<Resource> allResource = JSON.parseArray(attribute, Resource.class);
         List<Resource> checkAll = allResource.stream().filter(resource -> requestURI.contains(resource.getUrl())).collect(Collectors.toList());

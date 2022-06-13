@@ -52,7 +52,21 @@ public class LoginController {
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public ResultObject<User> login(String userName, String password, HttpSession session, HttpServletResponse res){
         ResultObject<User> resultObject = new ResultObject<>();
+
+        //권한 필요 자원 없으면 저장
+        String allResource = (String) session.getAttribute(CommonConst.SESSION_RESOURCES_NAME);
+//        String allResource = (String) redisTemplate.opsForValue().get(CommonConst.SESSION_RESOURCES_NAME);
+        if (StringUtils.isEmpty(allResource)){
+            List<Resource> resourceList = resourceService.queryAllResources();
+            session.setAttribute(CommonConst.SESSION_RESOURCES_NAME,JSON.toJSONString(resourceList));
+//            redisTemplate.opsForValue().set(CommonConst.SESSION_RESOURCES_NAME,JSON.toJSONString(resourceList));
+        }
+
         try {
+            if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(password)){
+                resultObject.setCode(CommonConst.FAIL);
+                resultObject.setMsg("로그인 이름 나 비밀번호 맞지안습니다");
+            }
             User user = userService.getUserByUserName(userName);
             if (user == null || StringUtils.isEmpty(user.getUserId()) || !password.equals(user.getPassword())){
                 resultObject.setCode(CommonConst.FAIL);
@@ -61,13 +75,6 @@ public class LoginController {
             UserRequestVo requestVo = new UserRequestVo();
             BeanUtils.copyProperties(user,requestVo);
             List<Resource> resources = userService.queryUserResources(requestVo);
-
-            //권한 필요 자원 없으면 저장
-            String allResource = (String) session.getAttribute(CommonConst.SESSION_RESOURCES_NAME);
-            if (StringUtils.isEmpty(allResource)){
-                List<Resource> resourceList = resourceService.queryAllResources();
-                session.setAttribute(CommonConst.SESSION_RESOURCES_NAME,JSON.toJSONString(resourceList));
-            }
 
             //로그인 상태 및 권한 저장
             session.setAttribute(CommonConst.SESSION_LOGIN_NAME+userName,JSON.toJSONString(resources));
