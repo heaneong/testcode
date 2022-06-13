@@ -3,6 +3,7 @@ package com.example.demo.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -24,20 +25,27 @@ public class RoleResourceRelation implements Serializable {
 
     private static final long serialVersionUID = 799399610551430436L;
 
-    @TableId(value = "role_resource_id", type = IdType.ID_WORKER_STR)
+    @ApiModelProperty(value = "역할 자원관계 id")
     private String roleResourceId;
 
+    @ApiModelProperty(value = "역할 id")
     private String roleId;
 
+    @ApiModelProperty(value = "자원 id")
     private String resourceId;
 
+    @ApiModelProperty(value = "삭제 표시")
     private Integer delFlag;
 
-    private Date createtime;
+    @ApiModelProperty(value = "생성 시간")
+    private Date createTime;
 
+    @ApiModelProperty(value = "변경 시간")
     private Date updateTime;
 
+    @ApiModelProperty(value = "생성 자 id")
     private String createId;
 
+    @ApiModelProperty(value = "수개 자 id")
     private String updateId;
 }

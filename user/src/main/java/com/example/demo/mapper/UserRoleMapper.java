@@ -28,7 +28,24 @@ public interface UserRoleMapper extends BaseMapper<UserRoleRelation> {
             "        SET\n" +
             "            del_flag = 1\n" +
             "        WHERE \n" +
-            "            user_id = #{userId} \n" +
+            "            <if test=\"userId != ''\">\n" +
+            "                 user_id = #{userId}\n" +
+            "            </if>\n" +
             "</script>")
     void deleteUserRoleByUserId(String userId);
+
+    @Update("<script>" +
+            "        UPDATE\n" +
+            "            user_role\n" +
+            "        SET\n" +
+            "            del_flag = 1\n" +
+            "        WHERE \n" +
+            "            <if test=\"userId != ''\">\n" +
+            "                 user_id = #{userId}\n" +
+            "            </if>\n" +
+            "            <if test=\"oldRoleId != ''\">\n" +
+            "                 oldRoleId = #{oldRoleId}\n" +
+            "            </if>\n" +
+            "</script>")
+    void deleteByUserRole(@Param("userId") String userId, @Param("oldRoleId") String oldRoleId);
 }

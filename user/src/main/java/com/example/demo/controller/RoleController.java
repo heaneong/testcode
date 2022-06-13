@@ -2,19 +2,27 @@ package com.example.demo.controller;
 
 import com.example.demo.constant.CommonConst;
 import com.example.demo.model.Resource;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
+import com.example.demo.service.IRoleService;
 import com.example.demo.service.IUserRoleService;
 import com.example.demo.service.IUserService;
+import com.example.demo.util.CommonUtils;
 import com.example.demo.vo.ResultObject;
+import com.example.demo.vo.user.RoleRequestVo;
 import com.example.demo.vo.user.UserRequestVo;
-import io.swagger.annotations.*;
-import org.springframework.beans.BeanUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,26 +33,24 @@ import java.util.List;
  * \
  */
 @RestController
-@RequestMapping("/user")
-@Api(value = "사용자 관리")
-public class UserController {
+@RequestMapping("/role")
+@Api(value = "역할 관리")
+public class RoleController {
 
     @Autowired
-    private IUserService userService;
+    private IRoleService roleService;
 
     @Autowired
     private IUserRoleService userRoleService;
 
-    @ApiOperation("전체 사용자 검색")
+    @ApiOperation("전체 역할 검색")
     @RequestMapping(value = "/queryList",method = RequestMethod.GET)
-    public ResultObject<List<User>> getUserList(){
-        ResultObject<List<User>> resultObject = new ResultObject<>();
+    public ResultObject<List<Role>> getUserList(){
+        ResultObject<List<Role>> resultObject = new ResultObject<>();
         try {
-            List<User> userList = userService.getUserList();
-            //비밀버호 안전보호
-            userList.stream().forEach(user -> user.passwordEncryption());
+            List<Role> roleList = roleService.getRoleList();
             resultObject.setCode(CommonConst.SUCCESS);
-            resultObject.setResult(userList);
+            resultObject.setResult(roleList);
         } catch (Exception e) {
             e.printStackTrace();
             resultObject.setCode(CommonConst.FAIL);
@@ -53,17 +59,15 @@ public class UserController {
         return resultObject;
     }
 
-    @ApiOperation("지정 사용자 검색")
-    @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "사용자 id", required = true, dataType = "String")})
+    @ApiOperation("지정 역할 검색")
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "역할 id", required = true, dataType = "String")})
     @RequestMapping(value = "/queryById",method = RequestMethod.GET)
-    public ResultObject<User> getUserById(String id){
-        ResultObject<User> resultObject = new ResultObject<>();
+    public ResultObject<Role> getRoleById(String id){
+        ResultObject<Role> resultObject = new ResultObject<>();
         try {
-            User user = userService.getUserById(id);
-            //비밀버호 안전보호
-            user.passwordEncryption();
+            Role role = roleService.getRoleById(id);
             resultObject.setCode(CommonConst.SUCCESS);
-            resultObject.setResult(user);
+            resultObject.setResult(role);
         } catch (Exception e) {
             e.printStackTrace();
             resultObject.setCode(CommonConst.FAIL);
@@ -72,15 +76,16 @@ public class UserController {
         return resultObject;
     }
 
-    @ApiOperation("새로운 사용자 저장")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userName", value = "사용자 이름", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "비밀번호", required = true, dataType = "String"),
+    @ApiOperation("새로운 역할 저장")
+    @ApiImplicitParams({@ApiImplicitParam(name = "code", value = "역할 코드", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "roleName", value = "역할 이름", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "des", value = "역할 설명", required = true, dataType = "String"),
             @ApiImplicitParam(name = "createId", value = "생성 자 id", required = true, dataType = "String")})
     @RequestMapping(value = "/insert",method = RequestMethod.PUT)
-    public ResultObject insertUser(UserRequestVo user){
+    public ResultObject insertUser(RoleRequestVo roleRequestVo){
         ResultObject resultObject = new ResultObject<>();
         try {
-            userService.insertUser(user);
+            roleService.insertRole(roleRequestVo);
             resultObject.setCode(CommonConst.SUCCESS);
             resultObject.setMsg("저장 성공");
         } catch (Exception e) {
@@ -91,17 +96,17 @@ public class UserController {
         return resultObject;
     }
 
-    @ApiOperation("사용자 자료 변경")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userName", value = "사용자 이름", required = false, dataType = "String"),
-            @ApiImplicitParam(name = "userId", value = "사용자 id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "비밀번호", required = false, dataType = "String"),
+    @ApiOperation("역할 자료 변경")
+    @ApiImplicitParams({@ApiImplicitParam(name = "roleName", value = "역할 이름", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "roleId", value = "역할 id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "des", value = "역할 설명", required = false, dataType = "String"),
             @ApiImplicitParam(name = "status", value = "상태", required = false, dataType = "String"),
             @ApiImplicitParam(name = "updateId", value = "수개 자 id", required = true, dataType = "String")})
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public ResultObject updateUser(UserRequestVo user){
+    public ResultObject updateRole(RoleRequestVo roleRequestVo){
         ResultObject resultObject = new ResultObject<>();
         try {
-            userService.updateUser(user);
+            roleService.updateRole(roleRequestVo);
             resultObject.setCode(CommonConst.SUCCESS);
             resultObject.setMsg("변경 성공");
         } catch (Exception e) {
@@ -112,13 +117,13 @@ public class UserController {
         return resultObject;
     }
 
-    @ApiOperation("사용자 삭제")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "사용자 id", required = true, dataType = "String")})
+    @ApiOperation("역할 삭제")
+    @ApiImplicitParams({@ApiImplicitParam(name = "roleId", value = "역할 id", required = true, dataType = "String")})
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE)
-    public ResultObject deleteUser(UserRequestVo user){
+    public ResultObject deleteRole(RoleRequestVo roleRequestVo){
         ResultObject resultObject = new ResultObject<>();
         try {
-            userService.deleteUser(user);
+            roleService.deleteRole(roleRequestVo);
             resultObject.setCode(CommonConst.SUCCESS);
             resultObject.setMsg("삭제 성공");
         } catch (Exception e) {
@@ -129,13 +134,13 @@ public class UserController {
         return resultObject;
     }
 
-    @ApiOperation("사용자 가진 권한 검색")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "사용자 id", required = true, dataType = "String")})
-    @RequestMapping(value = "/queryResourcesByUserId",method = RequestMethod.GET)
-    public ResultObject<List<Resource>> queryUserResources(UserRequestVo user){
+    @ApiOperation("역할 관리 권한 검색")
+    @ApiImplicitParams({@ApiImplicitParam(name = "roleId", value = "역할 id", required = true, dataType = "String")})
+    @RequestMapping(value = "/queryResourcesByRoleId",method = RequestMethod.GET)
+    public ResultObject<List<Resource>> queryRoleResources(RoleRequestVo roleRequestVo){
         ResultObject<List<Resource>> resultObject = new ResultObject<>();
         try {
-            List<Resource> result = userService.queryUserResources(user);
+            List<Resource> result = roleService.queryUserResources(roleRequestVo);
             resultObject.setResult(result);
             resultObject.setCode(CommonConst.SUCCESS);
             resultObject.setMsg("검색 성공");
@@ -148,14 +153,19 @@ public class UserController {
     }
 
     @ApiOperation("사용자 역할 저장")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "사용자 id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "oldRoleId", value = "원래 역할 id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "roleId", value = "역할 id", required = true, dataType = "String")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "roleId", value = "역할 id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "resourceIds", value = "관련 자원 전체", allowMultiple = true, required = true, dataType="java.util.List")})
     @RequestMapping(value = "/insertUserRole",method = RequestMethod.PUT)
-    public ResultObject insertUserRole(String userId,String oldRoleId, String roleId){
+    public ResultObject insertUserRole(String roleId, @RequestParam("resourceIds") List<String> resourceIds, HttpServletRequest request){
         ResultObject resultObject = new ResultObject<>();
         try {
-            userRoleService.insertUserRole(userId,oldRoleId,roleId);
+            String currentUserName = CommonUtils.getCurrentUserName(request);
+            if (StringUtils.isEmpty(currentUserName)){
+                resultObject.setCode(CommonConst.SUCCESS);
+                resultObject.setMsg("저장 실패");
+                return resultObject;
+            }
+            roleService.insertRoleResource(roleId,resourceIds,currentUserName);
             resultObject.setCode(CommonConst.SUCCESS);
             resultObject.setMsg("저장 성공");
         } catch (Exception e) {

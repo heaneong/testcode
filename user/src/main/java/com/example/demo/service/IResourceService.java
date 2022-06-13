@@ -13,4 +13,12 @@ import java.util.List;
  */
 public interface IResourceService {
     List<Resource> queryAllResources();
+
+    Resource getResourceById(String id);
+
+    void insertResource(Resource resource) throws Exception;
+
+    void updateResource(Resource resource) throws Exception;
+
+    void deleteResources(List<String> resourceIds);
 }

@@ -1,14 +1,12 @@
-package com.example.demo.model;
+package com.example.demo.vo.user;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * \* User: lihaining
@@ -18,15 +16,15 @@ import java.util.Date;
  * \
  */
 
-@Data
-@TableName("role")
+@ApiModel(value="RoleRequestVo 대상", description="역할 대상")
+@Getter
+@Setter
 @ToString
-public class Role implements Serializable {
+public class RoleRequestVo implements Serializable {
 
-    private static final long serialVersionUID = -8683011096014316711L;
+    private static final long serialVersionUID = 1103515721959863427L;
 
     @ApiModelProperty(value = "역할 id")
-    @TableId(value = "role_id", type = IdType.ID_WORKER_STR)
     private String roleId;
 
     @ApiModelProperty(value = "역할 코드")
@@ -36,23 +34,15 @@ public class Role implements Serializable {
     private String roleName;
 
     @ApiModelProperty(value = "역할 설명")
-    private String des;
+    private String desc;
 
     @ApiModelProperty(value = "역할 상태")
     private Integer status;
-
-    @ApiModelProperty(value = "삭제 표시")
-    private Integer delFlag;
-
-    @ApiModelProperty(value = "생성 시간")
-    private Date createTime;
-
-    @ApiModelProperty(value = "변경 시간")
-    private Date updateTime;
 
     @ApiModelProperty(value = "생성 자 id")
     private String createId;
 
     @ApiModelProperty(value = "수개 자 id")
     private String updateId;
+
 }

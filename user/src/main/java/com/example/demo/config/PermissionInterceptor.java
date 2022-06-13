@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.demo.constant.CommonConst;
 import com.example.demo.model.Resource;
 import com.example.demo.service.IResourceService;
+import com.example.demo.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -51,12 +52,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
 
         //방문 주소 권한 체크
         //로그인 사용자 이름 얻음
-        String username = "";
-        for (Cookie cookie : request.getCookies()) {
-            if (CommonConst.COOKIE_USER_NAME.equals(cookie.getName())){
-                username = cookie.getValue();
-            }
-        }
+        String username = CommonUtils.getCurrentUserName(request);
 
         if (StringUtils.isEmpty(username)){
             //권한 없음
